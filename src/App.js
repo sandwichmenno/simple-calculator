@@ -1,25 +1,55 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import Result from './components/Result/Result';
+
+import {StateProvider} from "./components/state";
+import Keypad from "./components/Keypad/Keypad";
+import styled from 'styled-components';
+
+const Calculator = styled.div`
+        width: 25%;
+        background: #f2f2f2;
+        box-shadow: -2px 2px 0px 2px rgba(194,194,196,1);
+        border-radius: 5px;
+    `;
 
 function App() {
+  const initialState = {
+    result: ""
+  };
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'ADD':
+        console.log("add");
+        return {
+          result: state.result + action.input
+        };
+      case 'CALCULATE':
+        return {
+          result: eval(state.result)
+        };
+      case 'CLEAR':
+        return {
+          result: ''
+        };
+      case 'BACKSPACE':
+        return {
+          result: (state.result).slice(0, -1)
+        };
+
+      default:
+        return state;
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <StateProvider initialState={initialState} reducer={reducer}>
+        <Calculator>
+          <Result />
+          <Keypad/>
+        </Calculator>
+      </StateProvider>
   );
 }
 
